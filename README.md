@@ -1,5 +1,7 @@
 # Medical Records AI API
 
+https://github.com/markrahimi/Medical_Records_AI_API
+
 A FastAPI-based medical records management system with AI-powered patient data analysis using Groq AI. Features OTP-based authentication via email and MongoDB Atlas for data persistence.
 
 ## Features
