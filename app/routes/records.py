@@ -4,6 +4,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, Header, HTTPException
 
 from app.core.database import get_database
+from app.core.logging import logger
 from app.models.medical_record import MedicalAnalysis, MedicalRecord, PatientData
 from app.services.ai_service import ai_service
 from app.services.auth_service import auth_service
@@ -13,22 +14,26 @@ router = APIRouter(prefix="/records", tags=["Medical Records"])
 
 async def get_current_user_from_token(authorization: Optional[str] = Header(None)):
     if not authorization or not authorization.startswith("Bearer "):
+        logger.warning("Authentication failed: Missing or invalid authorization header")
         raise HTTPException(status_code=401, detail="Not authenticated")
     token = authorization.split(" ")[1]
     user = await auth_service.get_current_user(token)
     if not user:
+        logger.warning("Authentication failed: Invalid token provided")
         raise HTTPException(status_code=401, detail="Invalid authentication token")
     return user
 
 
 @router.post("/analyze")
 async def analyze_patient(patient_data: PatientData) -> MedicalAnalysis:
+    logger.info(f"Received analysis request for patient: {patient_data.patient_name}")
     analysis = await ai_service.analyze_patient_data(patient_data)
     return analysis
 
 
 @router.post("", response_model=MedicalRecord)
 async def create_record(patient_data: PatientData, user=Depends(get_current_user_from_token)):
+    logger.info(f"Creating medical record for user: {user.email}")
     db = get_database()
 
     analysis = await ai_service.analyze_patient_data(patient_data)
@@ -41,6 +46,7 @@ async def create_record(patient_data: PatientData, user=Depends(get_current_user
     }
 
     result = await db.medical_records.insert_one(record_doc)
+    logger.info(f"Medical record created with ID: {result.inserted_id}")
 
     return MedicalRecord(
         id=str(result.inserted_id),
@@ -53,6 +59,7 @@ async def create_record(patient_data: PatientData, user=Depends(get_current_user
 
 @router.get("", response_model=list[MedicalRecord])
 async def get_all_records(user=Depends(get_current_user_from_token)):
+    logger.info(f"Fetching all records for user: {user.email}")
     db = get_database()
 
     cursor = db.medical_records.find()
@@ -69,4 +76,5 @@ async def get_all_records(user=Depends(get_current_user_from_token)):
             )
         )
 
+    logger.debug(f"Retrieved {len(records)} records from database")
     return records
