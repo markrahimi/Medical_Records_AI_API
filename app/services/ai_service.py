@@ -35,12 +35,9 @@ IMPORTANT: Provide general health advice only. This is not a substitute for prof
                 messages=[
                     {
                         "role": "system",
-                        "content": "You are a helpful medical assistant providing general health information."
+                        "content": "You are a helpful medical assistant providing general health information.",
                     },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
+                    {"role": "user", "content": prompt},
                 ],
                 model=settings.groq_model,
                 temperature=0.7,
@@ -48,7 +45,7 @@ IMPORTANT: Provide general health advice only. This is not a substitute for prof
             )
 
             response_text = chat_completion.choices[0].message.content
-            json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+            json_match = re.search(r"\{.*\}", response_text, re.DOTALL)
 
             if json_match:
                 result = json.loads(json_match.group())
@@ -56,13 +53,13 @@ IMPORTANT: Provide general health advice only. This is not a substitute for prof
             else:
                 return MedicalAnalysis(
                     analysis=response_text,
-                    recommendations=["Consult with a healthcare professional"]
+                    recommendations=["Consult with a healthcare professional"],
                 )
 
         except Exception:
             return MedicalAnalysis(
                 analysis="Unable to analyze at this time. Please try again later.",
-                recommendations=["Consult with a healthcare professional if symptoms persist"]
+                recommendations=["Consult with a healthcare professional if symptoms persist"],
             )
 
 

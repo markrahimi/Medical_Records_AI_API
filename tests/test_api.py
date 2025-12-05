@@ -17,7 +17,7 @@ async def test_analyze_endpoint(client: AsyncClient):
         "patient_name": "Test Patient",
         "age": 30,
         "symptoms": "headache, fever",
-        "medical_history": None
+        "medical_history": None,
     }
     response = await client.post("/records/analyze", json=patient_data)
     assert response.status_code == 200
@@ -29,10 +29,7 @@ async def test_analyze_endpoint(client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_request_otp_endpoint(client: AsyncClient):
-    user_data = {
-        "name": "Test User",
-        "email": "test@example.com"
-    }
+    user_data = {"name": "Test User", "email": "test@example.com"}
     response = await client.post("/auth/request-otp", json=user_data)
     assert response.status_code in [200, 500]
     if response.status_code == 200:
@@ -43,10 +40,7 @@ async def test_request_otp_endpoint(client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_verify_otp_invalid(client: AsyncClient):
-    otp_data = {
-        "email": "nonexistent@example.com",
-        "otp": "123456"
-    }
+    otp_data = {"email": "nonexistent@example.com", "otp": "123456"}
     response = await client.post("/auth/verify-otp", json=otp_data)
     assert response.status_code == 401
 

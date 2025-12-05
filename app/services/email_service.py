@@ -13,7 +13,7 @@ class EmailService:
         self.from_name = settings.from_name
 
     def generate_otp(self, length: int = 6) -> str:
-        return ''.join(random.choices(string.digits, k=length))
+        return "".join(random.choices(string.digits, k=length))
 
     async def send_otp_email(self, to_email: str, otp: str) -> bool:
         try:

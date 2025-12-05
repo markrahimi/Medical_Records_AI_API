@@ -18,11 +18,7 @@ class AuthService:
     async def request_otp(self, email: str, name: str) -> bool:
         otp = email_service.generate_otp()
         expiry = datetime.now(timezone.utc) + timedelta(minutes=settings.otp_expire_minutes)
-        self.otp_storage[email] = {
-            "otp": otp,
-            "name": name,
-            "expiry": expiry
-        }
+        self.otp_storage[email] = {"otp": otp, "name": name, "expiry": expiry}
         return await email_service.send_otp_email(email, otp)
 
     async def verify_otp(self, email: str, otp: str) -> Optional[Token]:
@@ -45,7 +41,7 @@ class AuthService:
             user_doc = {
                 "name": stored_data["name"],
                 "email": email,
-                "created_at": datetime.now(timezone.utc)
+                "created_at": datetime.now(timezone.utc),
             }
             result = await db.users.insert_one(user_doc)
             user_id = str(result.inserted_id)
@@ -58,7 +54,9 @@ class AuthService:
 
     def create_access_token(self, data: dict) -> str:
         to_encode = data.copy()
-        expire = datetime.now(timezone.utc) + timedelta(minutes=settings.access_token_expire_minutes)
+        expire = datetime.now(timezone.utc) + timedelta(
+            minutes=settings.access_token_expire_minutes
+        )
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
         return encoded_jwt
@@ -82,7 +80,7 @@ class AuthService:
                 id=str(user_data["_id"]),
                 name=user_data["name"],
                 email=user_data["email"],
-                created_at=user_data["created_at"]
+                created_at=user_data["created_at"],
             )
 
         except JWTError:

@@ -37,7 +37,7 @@ async def create_record(patient_data: PatientData, user=Depends(get_current_user
         "patient_data": patient_data.model_dump(),
         "ai_analysis": analysis.model_dump(),
         "created_at": datetime.now(timezone.utc),
-        "user_id": user.id
+        "user_id": user.id,
     }
 
     result = await db.medical_records.insert_one(record_doc)
@@ -47,7 +47,7 @@ async def create_record(patient_data: PatientData, user=Depends(get_current_user
         patient_data=patient_data,
         ai_analysis=analysis,
         created_at=record_doc["created_at"],
-        user_id=user.id
+        user_id=user.id,
     )
 
 
@@ -59,12 +59,14 @@ async def get_all_records(user=Depends(get_current_user_from_token)):
     records = []
 
     async for doc in cursor:
-        records.append(MedicalRecord(
-            id=str(doc["_id"]),
-            patient_data=PatientData(**doc["patient_data"]),
-            ai_analysis=MedicalAnalysis(**doc["ai_analysis"]),
-            created_at=doc["created_at"],
-            user_id=doc.get("user_id")
-        ))
+        records.append(
+            MedicalRecord(
+                id=str(doc["_id"]),
+                patient_data=PatientData(**doc["patient_data"]),
+                ai_analysis=MedicalAnalysis(**doc["ai_analysis"]),
+                created_at=doc["created_at"],
+                user_id=doc.get("user_id"),
+            )
+        )
 
     return records

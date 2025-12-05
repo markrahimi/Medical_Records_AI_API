@@ -14,11 +14,7 @@ async def lifespan(app: FastAPI):
     await close_mongo_connection()
 
 
-app = FastAPI(
-    title=settings.app_name,
-    version=settings.version,
-    lifespan=lifespan
-)
+app = FastAPI(title=settings.app_name, version=settings.version, lifespan=lifespan)
 
 app.include_router(auth.router)
 app.include_router(records.router)
@@ -29,5 +25,5 @@ async def root():
     return {
         "message": "Welcome to Medical Records AI API",
         "version": settings.version,
-        "docs": "/docs"
+        "docs": "/docs",
     }
