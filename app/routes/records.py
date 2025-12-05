@@ -1,10 +1,12 @@
-from fastapi import APIRouter, HTTPException, Depends, Header
-from typing import Optional
 from datetime import datetime, timezone
-from app.models.medical_record import PatientData, MedicalRecord, MedicalAnalysis
+from typing import Optional
+
+from fastapi import APIRouter, Depends, Header, HTTPException
+
+from app.core.database import get_database
+from app.models.medical_record import MedicalAnalysis, MedicalRecord, PatientData
 from app.services.ai_service import ai_service
 from app.services.auth_service import auth_service
-from app.core.database import get_database
 
 router = APIRouter(prefix="/records", tags=["Medical Records"])
 

@@ -1,6 +1,8 @@
 import random
 import string
+
 import resend
+
 from app.core.config import settings
 
 

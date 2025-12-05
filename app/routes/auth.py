@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from app.models.user import UserCreate, OTPVerify, Token
+
+from app.models.user import OTPVerify, Token, UserCreate
 from app.services.auth_service import auth_service
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])

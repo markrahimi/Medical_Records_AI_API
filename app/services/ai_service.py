@@ -1,8 +1,10 @@
 import json
 import re
+
 from groq import Groq
+
 from app.core.config import settings
-from app.models.medical_record import PatientData, MedicalAnalysis
+from app.models.medical_record import MedicalAnalysis, PatientData
 
 
 class AIService:

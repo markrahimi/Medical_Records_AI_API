@@ -1,10 +1,12 @@
 from datetime import datetime, timedelta, timezone
+from typing import Optional
+
 from jose import JWTError, jwt
+
 from app.core.config import settings
 from app.core.database import get_database
+from app.models.user import Token, User
 from app.services.email_service import email_service
-from app.models.user import User, Token
-from typing import Optional
 
 
 class AuthService:

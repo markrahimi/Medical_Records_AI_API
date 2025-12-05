@@ -1,8 +1,10 @@
-from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from app.core.database import connect_to_mongo, close_mongo_connection
-from app.routes import auth, records
+
+from fastapi import FastAPI
+
 from app.core.config import settings
+from app.core.database import close_mongo_connection, connect_to_mongo
+from app.routes import auth, records
 
 
 @asynccontextmanager
