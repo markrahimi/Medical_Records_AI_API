@@ -63,8 +63,8 @@ A FastAPI-based medical records management system with AI-powered patient data a
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repo-url>
-cd lecture-4
+git clone https://github.com/markrahimi/Medical_Records_AI_API
+cd Medical_Records_AI_API
 ```
 
 ### 2. Install Dependencies
@@ -613,8 +613,8 @@ async def test_new_endpoint(client: AsyncClient):
 
 ## License
 
-This project is for educational purposes as part of the Software Engineering course (Lecture 4).
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/markrahimi/Medical_Records_AI_API/blob/main/LICENSE) file for details.
 
 ## Author
 
-Mark Rahimi - Software Engineering Course Project
+Mohammadali RAHIMI KOUHBANANI (MARKRAHIMI) - Technological foundations of software development
