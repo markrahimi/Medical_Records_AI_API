@@ -1,3 +1,10 @@
+"""
+Medical Records AI API - Main Application Module.
+
+This module initializes the FastAPI application and configures
+the database connection lifecycle and API routes.
+"""
+
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -9,6 +16,17 @@ from app.routes import auth, records
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """
+    Manage application lifecycle events.
+
+    Handles database connection on startup and disconnection on shutdown.
+
+    Args:
+        app: The FastAPI application instance.
+
+    Yields:
+        None: Control is passed to the application.
+    """
     await connect_to_mongo()
     yield
     await close_mongo_connection()
@@ -22,6 +40,12 @@ app.include_router(records.router)
 
 @app.get("/")
 async def root():
+    """
+    Root endpoint - API health check and information.
+
+    Returns:
+        dict: Welcome message, API version, and documentation URL.
+    """
     return {
         "message": "Welcome to Medical Records AI API",
         "version": settings.version,

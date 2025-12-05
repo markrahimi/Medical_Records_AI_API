@@ -1,3 +1,10 @@
+"""
+AI Service Module.
+
+This module provides AI-powered medical analysis using Groq's LLaMA models.
+It analyzes patient symptoms and provides recommendations.
+"""
+
 import json
 import re
 
@@ -9,11 +16,32 @@ from app.models.medical_record import MedicalAnalysis, PatientData
 
 
 class AIService:
+    """
+    Service class for AI-powered medical analysis.
+
+    Uses Groq API with LLaMA models to analyze patient data
+    and generate medical insights and recommendations.
+
+    Attributes:
+        client: Groq API client instance.
+    """
+
     def __init__(self):
+        """Initialize the AI service with Groq client."""
         self.client = Groq(api_key=settings.groq_api_key)
         logger.debug("AI Service initialized")
 
     async def analyze_patient_data(self, patient_data: PatientData) -> MedicalAnalysis:
+        """
+        Analyze patient data using AI and return medical insights.
+
+        Args:
+            patient_data: Patient information including name, age, symptoms,
+                         and medical history.
+
+        Returns:
+            MedicalAnalysis: Analysis results with recommendations.
+        """
         logger.info(
             f"Starting analysis for patient: {patient_data.patient_name}, age: {patient_data.age}"
         )

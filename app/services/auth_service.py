@@ -1,3 +1,10 @@
+"""
+Authentication Service Module.
+
+This module handles user authentication using OTP (One-Time Password)
+verification via email and JWT token generation.
+"""
+
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -11,12 +18,34 @@ from app.services.email_service import email_service
 
 
 class AuthService:
+    """
+    Service class for user authentication.
+
+    Handles OTP generation, verification, and JWT token management.
+
+    Attributes:
+        secret_key: Secret key for JWT encoding.
+        algorithm: Algorithm used for JWT encoding.
+        otp_storage: In-memory storage for OTP codes.
+    """
+
     def __init__(self):
+        """Initialize the authentication service."""
         self.secret_key = settings.secret_key
         self.algorithm = settings.algorithm
         self.otp_storage = {}  # In-memory OTP storage (for production, use Redis)
 
     async def request_otp(self, email: str, name: str) -> bool:
+        """
+        Generate and send OTP to user's email.
+
+        Args:
+            email: User's email address.
+            name: User's name.
+
+        Returns:
+            bool: True if OTP was sent successfully.
+        """
         logger.debug(f"Generating OTP for user: {email}")
         otp = email_service.generate_otp()
         expiry = datetime.now(timezone.utc) + timedelta(minutes=settings.otp_expire_minutes)
@@ -25,6 +54,16 @@ class AuthService:
         return await email_service.send_otp_email(email, otp)
 
     async def verify_otp(self, email: str, otp: str) -> Optional[Token]:
+        """
+        Verify OTP and generate JWT token.
+
+        Args:
+            email: User's email address.
+            otp: One-time password to verify.
+
+        Returns:
+            Token: JWT access token if verification succeeds, None otherwise.
+        """
         logger.debug(f"Verifying OTP for email: {email}")
 
         if email not in self.otp_storage:
@@ -64,6 +103,15 @@ class AuthService:
         return Token(access_token=token)
 
     def create_access_token(self, data: dict) -> str:
+        """
+        Create a JWT access token.
+
+        Args:
+            data: Payload data to encode in the token.
+
+        Returns:
+            str: Encoded JWT token.
+        """
         to_encode = data.copy()
         expire = datetime.now(timezone.utc) + timedelta(
             minutes=settings.access_token_expire_minutes
@@ -73,6 +121,15 @@ class AuthService:
         return encoded_jwt
 
     async def get_current_user(self, token: str) -> Optional[User]:
+        """
+        Get current user from JWT token.
+
+        Args:
+            token: JWT access token.
+
+        Returns:
+            User: User object if token is valid, None otherwise.
+        """
         logger.debug("Validating access token")
         try:
             payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
